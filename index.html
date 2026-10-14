@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#08060d">
+  <title>AXON | Tournament Arena</title>
+
+  <style>
+    :root {
+      --bg: #08060d;
+      --card: #15101d;
+      --purple: #a020f0;
+      --pink: #ed35ff;
+      --white: #f8f4ff;
+      --muted: #a9a0b6;
+      --border: #39204b;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--white);
+      font-family: Arial, Helvetica, sans-serif;
+      padding-bottom: 82px;
+    }
+
+    button, a {
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    button {
+      font: inherit;
+      cursor: pointer;
+    }
+
+    header {
+      height: 72px;
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #050408;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 20;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      color: white;
+      font-size: 23px;
+      font-weight: 900;
+      letter-spacing: 2px;
+      text-decoration: none;
+    }
+
+    .brand-mark {
+      width: 36px;
+      height: 36px;
+      display: grid;
+      place-items: center;
+      border: 2px solid var(--pink);
+      color: var(--pink);
+      font-size: 23px;
+      font-weight: 900;
+      transform: skew(-8deg);
+      text-shadow: 0 0 12px var(--purple);
+    }
+
+    .help-button {
+      background: #120a1b;
+      color: white;
+      border: 1px solid var(--purple);
+      border-radius: 9px;
+      padding: 9px 14px;
+      font-weight: bold;
+    }
+
+    .ticker {
+      overflow: hidden;
+      white-space: nowrap;
+      background: #170c21;
+      border-bottom: 1px solid var(--border);
+      padding: 11px 0;
+      color: #f0a6ff;
+      font-size: 13px;
+      font-weight: bold;
+    }
+
+    .ticker span {
+      display: inline-block;
+      padding-left: 100%;
+      animation: tickerMove 18s linear infinite;
+    }
+
+    @keyframes tickerMove {
+      from { transform: translateX(0); }
+      to { transform: translateX(-100%); }
+    }
+
+    .hero {
+      padding: 15px 12px 8px;
+    }
+
+    .slider {
+      overflow: hidden;
+      position: relative;
+      border: 1px solid var(--purple);
+      border-radius: 12px;
+      box-shadow: 0 0 18px #7b18bd30;
+      background: #140a1c;
+    }
+
+    .slides {
+      display: flex;
+      transition: transform 0.7s ease;
+    }
+
+    .slide {
+      min-width: 100%;
+      height: 190px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 22px;
+      position: relative;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 80% 20%, #8225bd 0, transparent 42%),
+        linear-gradient(125deg, #100817, #2a1040 55%, #09050d);
+    }
+
+    .slide::after {
+      content: "AXON";
+      position: absolute;
+      right: -9px;
+      bottom: -13px;
+      font-size: 65px;
+      font-weight: 900;
+      color: #ffffff0b;
+      transform: skew(-10deg);
+    }
+
+    .slide h2 {
+      font-size: 27px;
+      line-height: 1.1;
+      max-width: 260px;
+      text-transform: uppercase;
+      font-style: italic;
+      text-shadow: 0 0 15px #b42aff70;
+      position: relative;
+      z-index: 1;
+    }
+
+    .slide h2 strong {
+      color: var(--pink);
+    }
+
+    .slide p {
+      color: #ddd0e8;
+      font-size: 12px;
+      margin-top: 10px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .slide-button {
+      display: inline-block;
+      margin-top: 14px;
+      padding: 9px 13px;
+      background: linear-gradient(90deg, #7e17c5, #e12dff);
+      border-radius: 5px;
+      color: white;
+      font-size: 12px;
+      font-weight: bold;
+      text-decoration: none;
+      position: relative;
+      z-index: 2;
+    }
+
+    .dots {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      padding: 12px 0 8px;
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      border: 0;
+      border-radius: 50%;
+      background: #493455;
+    }
+
+    .dot.active {
+      width: 23px;
+      border-radius: 10px;
+      background: var(--pink);
+      box-shadow: 0 0 8px var(--purple);
+    }
+
+    .status-tabs {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 9px;
+      padding: 16px 12px;
+      border-top: 1px solid #25162f;
+      border-bottom: 1px solid #25162f;
+    }
+
+    .status-tab {
+      min-height: 76px;
+      border: 1px solid #44304f;
+      border-radius: 11px;
+      background: #0e0a13;
+      color: var(--white);
+      font-weight: bold;
+    }
+
+    .status-tab .icon {
+      display: block;
+      font-size: 23px;
+      margin-bottom: 7px;
+    }
+
+    .status-tab.active {
+      border-color: var(--pink);
+      background: #26102f;
+      box-shadow: inset 0 0 15px #a020f01c;
+    }
+
+    .section {
+      padding: 23px 12px 0;
+    }
+
+    .section-heading {
+      text-align: center;
+      font-size: 26px;
+      margin-bottom: 18px;
+      font-weight: 900;
+      letter-spacing: .2px;
+    }
+
+    .section-heading span {
+      color: var(--pink);
+    }
+
+    .modes {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .mode-card {
+      overflow: hidden;
+      background: var(--card);
+      border: 1px solid #34213e;
+      border-radius: 9px;
+      text-align: center;
+      color: white;
+      text-decoration: none;
+      transition: transform .15s, border-color .15s;
+    }
+
+    .mode-card:active {
+      transform: scale(.97);
+    }
+
+    .mode-art {
+      height: 112px;
+      background:
+        radial-gradient(circle at 50% 25%, #a52bfa 0, transparent 48%),
+        linear-gradient(145deg, #21102d, #09060e);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .mode-art::after {
+      content: "AXON";
+      position: absolute;
+      bottom: 1px;
+      right: 4px;
+      color: #ffffff13;
+      font-size: 27px;
+      font-weight: 900;
+    }
+
+    .mode-symbol {
+      font-size: 39px;
+      color: #f1b7ff;
+      text-shadow: 0 0 20px #b020ff;
+      font-weight: 900;
+    }
+
+    .mode-title {
+      padding: 11px 5px;
+      min-height: 52px;
+      display: grid;
+      place-items: center;
+      font-size: 13px;
+      font-weight: 900;
+      text-transform: uppercase;
+      line-height: 1.25;
+      background: #17101e;
+    }
+
+    .social-section {
+      padding: 25px 16px 10px;
+    }
+
+    .social-heading {
+      font-size: 17px;
+      text-align: center;
+      margin-bottom: 13px;
+    }
+
+    .social-button {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 15px;
+      margin-bottom: 11px;
+      border: 1px solid #42314d;
+      border-radius: 13px;
+      text-decoration: none;
+      font-size: 16px;
+      font-weight: bold;
+      background: #110c17;
+    }
+
+    .telegram { color: #42baff; border-color: #174b62; }
+    .whatsapp { color: #40df81; border-color: #205536; }
+    .instagram { color: #ff80c5; border-color: #60304d; }
+
+    .social-note {
+      color: var(--muted);
+      text-align: center;
+      font-size: 11px;
+      line-height: 1.5;
+      margin-top: 7px;
+    }
+
+    .matches-page {
+      display: none;
+      padding: 20px 13px;
+    }
+
+    .matches-page h2 {
+      font-size: 24px;
+      margin-bottom: 8px;
+    }
+
+    .back-button {
+      color: #eab5ff;
+      background: #1a0d23;
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      padding: 9px 13px;
+      margin-bottom: 20px;
+    }
+
+    .empty-state {
+      margin-top: 20px;
+      padding: 27px 15px;
+      text-align: center;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    .empty-state strong {
+      display: block;
+      color: white;
+      font-size: 16px;
+      margin-bottom: 7px;
+    }
+
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      z-index: 30;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      background: #08060df5;
+      border-top: 1px solid var(--border);
+      padding: 9px 5px calc(9px + env(safe-area-inset-bottom));
+      backdrop-filter: blur(10px);
+    }
+
+    .nav-button {
+      border: 0;
+      background: transparent;
+      color: #9c91a8;
+      font-size: 12px;
+      font-weight: bold;
+      padding: 4px;
+    }
+
+    .nav-button .nav-icon {
+      display: block;
+      font-size: 23px;
+      margin-bottom: 4px;
+    }
+
+    .nav-button.active {
+      color: var(--pink);
+    }
+
+    .profile-page {
+      display: none;
+      padding: 25px 16px;
+    }
+
+    .profile-box {
+      padding: 22px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: var(--card);
+    }
+
+    .profile-box p {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.7;
+      margin-top: 10px;
+    }
+
+    @media (min-width: 650px) {
+      body {
+        max-width: 850px;
+        margin: auto;
+      }
+
+      .slide {
+        height: 290px;
+        padding: 35px;
+      }
+
+      .slide h2 {
+        font-size: 40px;
+        max-width: 390px;
+      }
+
+      .modes {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      .mode-art {
+        height: 150px;
+      }
+
+      header {
+        position: sticky;
+      }
+    }
+
+    @media (max-width: 360px) {
+      .mode-art { height: 95px; }
+      .mode-title { font-size: 12px; }
+      .section-heading { font-size: 23px; }
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <a class="brand" href="#" onclick="showPage('home');return false;" aria-label="AXON Home">
+      <span class="brand-mark">A</span>
+      <span>AXON</span>
+    </a>
+    <button class="help-button" onclick="openHelp()">♧ Help</button>
+  </header>
+
+  <div class="ticker">
+    <span id="tickerText">🔥 AXON FREE MATCHES LIVE! &nbsp; • &nbsp; PLAY. COMPETE. WIN. &nbsp; • &nbsp; YOUR NEXT MATCH AWAITS! &nbsp; • &nbsp;</span>
+  </div>
+
+  <main id="homePage">
+    <section class="hero">
+      <div class="slider">
+        <div class="slides" id="slides">
+          <div class="slide">
+            <h2>AXON <strong>TOURNAMENTS</strong></h2>
+            <p>COMPETE • CONQUER • WIN</p>
+            <a href="#" class="slide-button" onclick="showPage('mode', 'Battle Royale — Full Map');return false;">EXPLORE MATCHES ↗</a>
+          </div>
+
+          <div class="slide">
+            <h2>HOW TO <strong>JOIN MATCHES?</strong></h2>
+            <p>Learn how to register for an AXON tournament.</p>
+            <a href="#" class="slide-button" onclick="openTutorial();return false;">▶ WATCH TUTORIAL</a>
+          </div>
+
+          <div class="slide">
+            <h2>ARE YOU <strong>READY?</strong></h2>
+            <p>Sharpen your skills. Prove your game.</p>
+            <a href="#" class="slide-button" onclick="showPage('mode', 'Free Matches');return false;">PLAY NOW ↗</a>
+          </div>
+        </div>
+      </div>
+      <div class="dots" id="dots">
+        <button class="dot active" aria-label="Banner 1" onclick="goSlide(0)"></button>
+        <button class="dot" aria-label="Banner 2" onclick="goSlide(1)"></button>
+        <button class="dot" aria-label="Banner 3" onclick="goSlide(2)"></button>
+      </div>
+    </section>
+
+    <section class="status-tabs" aria-label="Match status">
+      <button class="status-tab active" onclick="selectStatus(this,'Upcoming')">
+        <span class="icon">⌛</span>Upcoming
+      </button>
+      <button class="status-tab" onclick="selectStatus(this,'Live')">
+        <span class="icon">⚑</span>Live
+      </button>
+      <button class="status-tab" onclick="selectStatus(this,'Completed')">
+        <span class="icon">🏆</span>Completed
+      </button>
+    </section>
+
+    <section class="section">
+      <h1 class="section-heading">GAME <span>MODES</span></h1>
+
+      <div class="modes">
+        <a class="mode-card" href="#" onclick="showPage('mode','Battle Royale — Full Map');return false;">
+          <div class="mode-art"><span class="mode-symbol">BR</span></div>
+          <div class="mode-title">Battle Royale<br>Full Map</div>
+        </a>
+
+        <a class="mode-card" href="#" onclick="showPage('mode','Clash Squad 4v4');return false;">
+          <div class="mode-art"><span class="mode-symbol">4v4</span></div>
+          <div class="mode-title">Clash Squad<br>4v4</div>
+        </a>
+
+        <a class="mode-card" href="#" onclick="showPage('mode','Lone Wolf 1v1');return false;">
+          <div class="mode-art"><span class="mode-symbol">1v1</span></div>
+          <div class="mode-title">Lone Wolf<br>1v1</div>
+        </a>
+
+        <a class="mode-card" href="#" onclick="showPage('mode','Only Head 1v1');return false;">
+          <div class="mode-art"><span class="mode-symbol">OH</span></div>
+          <div class="mode-title">Only Head<br>1v1</div>
+        </a>
+
+        <a class="mode-card" href="#" onclick="showPage('mode','Lone Wolf 2v2');return false;">
+          <div class="mode-art"><span class="mode-symbol">2v2</span></div>
+          <div class="mode-title">Lone Wolf<br>2v2</div>
+        </a>
+
+        <a class="mode-card" href="#" onclick="showPage('mode','Only Head 2v2');return false;">
+          <div class="mode-art"><span class="mode-symbol">OH</span></div>
+          <div class="mode-title">Only Head<br>2v2</div>
+        </a>
+
+        <a class="mode-card" href="#" onclick="showPage('mode','Free Matches');return false;">
+          <div class="mode-art"><span class="mode-symbol">FREE</span></div>
+          <div class="mode-title">Free Matches</div>
+        </a>
+      </div>
+    </section>
+
+    <section class="social-section">
+      <h2 class="social-heading">JOIN THE <span style="color:var(--pink)">AXON COMMUNITY</span></h2>
+      <a class="social-button telegram" id="telegramLink" href="#" onclick="showLinkMessage('Telegram');return false;">➤ &nbsp; Telegram</a>
+      <a class="social-button whatsapp" id="whatsappLink" href="#" onclick="showLinkMessage('WhatsApp');return false;">◉ &nbsp; WhatsApp</a>
+      <a class="social-button instagram" id="instagramLink" href="#" onclick="showLinkMessage('Instagram');return false;">◎ &nbsp; Instagram</a>
+      <p class="social-note">Official social links will be connected here later.</p>
+    </section>
+  </main>
+
+  <section class="matches-page" id="matchesPage">
+    <button class="back-button" onclick="showPage('home')">← Back to Home</button>
+    <h2 id="matchesTitle">Upcoming Matches</h2>
+    <p id="matchesSubtitle" style="color:var(--muted);margin-top:7px;"></p>
+    <div class="empty-state">
+      <strong id="emptyTitle">Upcoming matches will appear here.</strong>
+      Match listings will show after tournament data is connected.
+    </div>
+  </section>
+
+  <section class="profile-page" id="profilePage">
+    <h2 style="margin-bottom:16px;">My Profile</h2>
+    <div class="profile-box">
+      <h3>Welcome to AXON</h3>
+      <p>Your player profile and registered matches will appear here once account and registration features are connected.</p>
+    </div>
+  </section>
+
+  <nav class="bottom-nav" aria-label="Main navigation">
+    <button class="nav-button active" onclick="showPage('home');setNav(this)">
+      <span class="nav-icon">⌂</span>Home
+    </button>
+    <button class="nav-button" onclick="showPage('myMatches');setNav(this)">
+      <span class="nav-icon">▤</span>My Matches
+    </button>
+    <button class="nav-button" onclick="showPage('profile');setNav(this)">
+      <span class="nav-icon">♙</span>Profile
+    </button>
+  </nav>
+
+  <script>
+    let currentSlide = 0;
+    const slideTrack = document.getElementById('slides');
+    const dotButtons = document.querySelectorAll('.dot');
+
+    function goSlide(index) {
+      const total = slideTrack.children.length;
+      currentSlide = (index + total) % total;
+      slideTrack.style.transform = `translateX(-${currentSlide * 100}%)`;
+      dotButtons.forEach((dot, i) => {
+        dot.classList.toggle('active', i === currentSlide);
+      });
+    }
+
+    setInterval(() => goSlide(currentSlide + 1), 5000);
+
+    let currentStatus = 'Upcoming';
+
+    function selectStatus(button, status) {
+      document.querySelectorAll('.status-tab').forEach(tab => {
+        tab.classList.remove('active');
+      });
+      button.classList.add('active');
+      currentStatus = status;
+    }
+
+    function showPage(page, modeName = '') {
+      document.getElementById('homePage').style.display = 'none';
+      document.getElementById('matchesPage').style.display = 'none';
+      document.getElementById('profilePage').style.display = 'none';
+
+      if (page === 'home') {
+        document.getElementById('homePage').style.display = 'block';
+        window.scrollTo(0, 0);
+        return;
+      }
+
+      if (page === 'profile') {
+        document.getElementById('profilePage').style.display = 'block';
+        window.scrollTo(0, 0);
+        return;
+      }
+
+      document.getElementById('matchesPage').style.display = 'block';
+
+      if (page === 'myMatches') {
+        document.getElementById('matchesTitle').textContent = 'My Matches';
+        document.getElementById('matchesSubtitle').textContent =
+          'Your registered tournaments will appear here.';
+        document.getElementById('emptyTitle').textContent =
+          'No registered matches yet.';
+      } else {
+        document.getElementById('matchesTitle').textContent = modeName;
+        document.getElementById('matchesSubtitle').textContent =
+          currentStatus + ' Matches';
+        document.getElementById('emptyTitle').textContent =
+          'No ' + currentStatus.toLowerCase() + ' matches listed yet.';
+      }
+
+      window.scrollTo(0, 0);
+    }
+
+    function setNav(button) {
+      document.querySelectorAll('.nav-button').forEach(nav => {
+        nav.classList.remove('active');
+      });
+      button.classList.add('active');
+    }
+
+    function openHelp() {
+      alert('AXON Help\\n\\nSupport contact will be added here later.');
+    }
+
+    function openTutorial() {
+      alert('Your YouTube tutorial link will be connected here later.');
+    }
+
+    function showLinkMessage(platform) {
+      alert(platform + ' link will be added here later.');
+    }
+  </script>
+</body>
+  </html>
